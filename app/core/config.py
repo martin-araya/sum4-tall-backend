@@ -22,6 +22,12 @@ class Settings(BaseSettings):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.database_url = self.database_url.strip()
+        # Automatically convert standard postgresql:// or postgres:// schemes to postgresql+asyncpg:// for async pg driver compatibility
+        if self.database_url.startswith("postgresql://"):
+            self.database_url = self.database_url.replace("postgresql://", "postgresql+asyncpg://", 1)
+        elif self.database_url.startswith("postgres://"):
+            self.database_url = self.database_url.replace("postgres://", "postgresql+asyncpg://", 1)
+
         self.secret_key = self.secret_key.strip()
         self.public_key = self.public_key.strip()
         self.algorithm = self.algorithm.strip()
