@@ -54,8 +54,8 @@ app.add_middleware(AuditChainMiddleware)
 # 2. CORS (Must be added last so it executes first, intercepting OPTIONS requests)
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
-    allow_credentials=True,
+    allow_origins=["*"],
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )
