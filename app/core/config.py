@@ -17,7 +17,15 @@ class Settings(BaseSettings):
     access_token_expire_minutes: int = 30
     refresh_token_expire_days: int = 7
     environment: str = "development"
-    cors_origins: list[str] = ["http://localhost:3000"]
+    cors_origins: list[str] = [
+        "http://localhost:3000",
+        "http://localhost:3008",
+        "http://localhost:8003",
+        "http://10.0.2.2:3000",
+        "http://10.0.2.2:3008",
+        "http://10.0.2.2:8003",
+        "https://sum4-tall-frontend.onrender.com"
+    ]
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

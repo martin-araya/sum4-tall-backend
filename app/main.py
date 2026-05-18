@@ -27,6 +27,7 @@ settings = get_settings()
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     logger.info("AuditChain API starting up (env=%s)", settings.environment)
+    logger.info("CORS Origins allowed: %s", settings.cors_origins)
     db_ok = await check_db_connection()
     if db_ok:
         logger.info("DB connection OK")
@@ -47,7 +48,10 @@ app = FastAPI(
 
 register_error_handlers(app)
 
-# 1. CORS
+# 1. AuditChain middleware (Timing and Correlation ID)
+app.add_middleware(AuditChainMiddleware)
+
+# 2. CORS (Must be added last so it executes first, intercepting OPTIONS requests)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=settings.cors_origins,
@@ -55,9 +59,6 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-
-# 2. AuditChain middleware (Timing and Correlation ID)
-app.add_middleware(AuditChainMiddleware)
 
 
 # Routers
