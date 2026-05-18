@@ -50,5 +50,16 @@ async def check_db_connection() -> bool:
             await session.execute(text("SELECT 1"))
         return True
     except Exception as e:
-        logger.exception("Database connection verification failed: %s", str(e))
+        # Mask password for safe logging
+        safe_url = _settings.database_url
+        try:
+            if "@" in safe_url:
+                parts = safe_url.split("@")
+                creds = parts[0].split(":")
+                if len(creds) > 2:
+                    safe_url = f"{creds[0]}:{creds[1]}:******@{parts[1]}"
+        except Exception:
+            pass
+            
+        logger.exception("Database connection verification failed for %s: %s", safe_url, str(e))
         return False
